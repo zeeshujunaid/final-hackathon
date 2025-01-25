@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Link } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
 import { FaRunning } from 'react-icons/fa';
-import { signInWithGoogle } from '../Firebase/Firebase';
+import { signInWithGoogle } from '../firebase/firebase';
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
