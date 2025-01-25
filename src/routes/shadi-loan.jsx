@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2'; // Don't forget to import SweetAlert
 
 function ShadiLoan() {
   // State for form inputs
@@ -9,6 +10,8 @@ function ShadiLoan() {
     amount: '',
   });
 
+  const [calculatedAmount, setCalculatedAmount] = useState(null); // State to store the calculated amount
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -17,14 +20,9 @@ function ShadiLoan() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  };
-
   const styles = {
     container: {
-      Height: '100vh',
+      height: '100vh',
       width: '100vw',
       backgroundImage: "url('https://www.example.com/your-background.jpg')",
       backgroundSize: 'cover',
@@ -90,6 +88,42 @@ function ShadiLoan() {
     buttonHover: {
       backgroundColor: '#218838',
     },
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { subCategory, loanPeriod, initialDeposit, amount } = formData;
+
+    // Validate that all fields are filled
+    if (!subCategory || !loanPeriod || !initialDeposit || !amount) {
+      alert('Please fill all the inputs');
+      return;
+    } else {
+      const totalAmount = parseInt(amount) - parseInt(initialDeposit);
+      const monthlyInstallment = totalAmount / parseInt(loanPeriod);
+
+      // Set the calculated amount state
+      setCalculatedAmount(monthlyInstallment);
+
+      // Show SweetAlert with calculated amount
+      Swal.fire({
+        title: `Your installment amount is ${monthlyInstallment} PKR per month`,
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Proceed',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Confirmed!',
+            text: 'Your loan has been approved.',
+            icon: 'success',
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -172,6 +206,14 @@ function ShadiLoan() {
             Submit
           </button>
         </form>
+
+        {/* Display Calculated Monthly Payment */}
+        {calculatedAmount !== null && (
+          <div style={{ marginTop: '24px', fontSize: '1.25rem', fontWeight: 'bold' }}>
+            <p>Remaining Amount after Initial Deposit: {Number(formData.amount) - Number(formData.initialDeposit)}</p>
+            <p>Monthly Payment: {calculatedAmount} PKR</p>
+          </div>
+        )}
       </div>
     </div>
   );
