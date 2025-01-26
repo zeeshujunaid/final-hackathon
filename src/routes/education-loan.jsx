@@ -4,7 +4,6 @@ import { getAuth } from 'firebase/auth'; // Import Auth if needed for user authe
 import { createUserWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth
 import { getFirestore, collection, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 
-
 function EducationLoan() {
   // State for form inputs
   const [formData, setFormData] = useState({
@@ -15,6 +14,7 @@ function EducationLoan() {
   });
 
   const [calculatedAmount, setCalculatedAmount] = useState(null); // State to store the calculated amount
+  const [temporaryPassword, setTemporaryPassword] = useState(''); // State to store the generated temporary password
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,21 +24,22 @@ function EducationLoan() {
     }));
   };
 
+  // Save to database
   const saveToDatabase = async () => {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const cnic = document.getElementById('cnic').value;
-  
+
     // Check if any input is empty
     if (!name || !email || !cnic) {
       Swal.showValidationMessage('Please fill all the inputs');
       return false;
     }
-  
+
     try {
       // Get user loan data from local storage
       const loanData = JSON.parse(localStorage.getItem('userLoanData'));
-  
+
       if (!loanData) {
         Swal.fire({
           title: 'Error',
@@ -48,20 +49,20 @@ function EducationLoan() {
         });
         return false;
       }
-  
+
       // Firebase Authentication: Create user with email and a temporary password
       const auth = getAuth();
       const temporaryPassword = Math.random().toString(36).slice(-8); // Generates a temporary 8-character password
       console.log('Temporary Password:', temporaryPassword); // Only for debugging, remove in production
-  
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, temporaryPassword); // Sign up user
       const user = userCredential.user;
       console.log('User created:', user);
-  
+
       // Get Firestore instance
       const db = getFirestore();
       const userRef = doc(db, 'users', cnic); // Set the CNIC as the document ID
-  
+
       // Save user details and loan data to Firestore with CNIC as the document ID
       await setDoc(userRef, {
         name,
@@ -70,19 +71,22 @@ function EducationLoan() {
         createdAt: new Date(),
         loanDetails: loanData, // Include loan data from local storage
       });
-  
-      // Success message
+
+      // Set temporary password in state
+      setTemporaryPassword(temporaryPassword);
+
+      // Success message with temporary password
       Swal.fire({
-        title: 'Data Saved',
-        text: 'Your details and loan data have been saved successfully in Firebase.',
+        title: 'Application Submitted',
+        text: `Your application has been submitted successfully. Your account has been created successfully. Temporary Password: ${temporaryPassword}`,
         icon: 'success',
         confirmButtonText: 'OK',
       });
-  
+
       return true; // Return true to proceed
     } catch (error) {
       console.error('Error saving user data:', error);
-  
+
       // Handle errors from Firebase Auth and Firestore
       let errorMessage = 'There was an error. Please try again later.';
       if (error.code === 'auth/email-already-in-use') {
@@ -90,20 +94,18 @@ function EducationLoan() {
       } else if (error.code === 'auth/weak-password') {
         errorMessage = 'Password is too weak. Please use a stronger password.';
       }
-  
+
       Swal.fire({
         title: 'Error!',
         text: errorMessage,
         icon: 'error',
         confirmButtonText: 'OK',
       });
-  
+
       return false;
     }
   };
-  
-  
-  
+
   const styles = {
     container: {
       height: '100vh',
@@ -204,10 +206,10 @@ function EducationLoan() {
       if (savedData) {
         console.log('Loan data saved to local storage:', savedData);
 
-        // Show SweetAlert with calculated amount
+        // Show SweetAlert with calculated amount and temporary password
         Swal.fire({
           title: `Your installment amount is ${monthlyInstallment} PKR per month`,
-          text: "Save this and now proceed to next page",
+          text: `Temporary Password: ${temporaryPassword}\nPlease copy it for login.`,
           icon: 'success',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -232,7 +234,7 @@ function EducationLoan() {
               if (result.isConfirmed) {
                 Swal.fire({
                   title: 'Data Saved',
-                  text: 'Your details have been saved successfully.',
+                  text: 'Your details have been saved successfully and your temporary password is generated plz copy that to login.',
                   icon: 'success',
                   confirmButtonText: 'OK',
                 });
@@ -271,23 +273,20 @@ function EducationLoan() {
               required
             >
               <option value="">Select</option>
-              <option value="ruhksati">ruhksati</option>
-              <option value="gifts">gifts</option>
-              <option value="valima">valima</option>
-              <option value="full shadi">full shadi</option>
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Postgraduate">Postgraduate</option>
             </select>
           </div>
-
+          
           {/* Loan Period */}
           <div>
-            <label htmlFor="loanPeriod" style={{ fontWeight: 'bold' }}>Loan Period (in months):</label>
+            <label htmlFor="loanPeriod" style={{ fontWeight: 'bold' }}>Loan Period (Months):</label>
             <input
               type="number"
               id="loanPeriod"
               name="loanPeriod"
               value={formData.loanPeriod}
               onChange={handleInputChange}
-              placeholder="Enter loan period"
               style={styles.input}
               required
             />
@@ -302,44 +301,32 @@ function EducationLoan() {
               name="initialDeposit"
               value={formData.initialDeposit}
               onChange={handleInputChange}
-              placeholder="Enter initial deposit"
               style={styles.input}
               required
             />
           </div>
 
-          {/* Loan Amount */}
+          {/* Amount */}
           <div>
-            <label htmlFor="amount" style={{ fontWeight: 'bold' }}>Loan Amount:</label>
+            <label htmlFor="amount" style={{ fontWeight: 'bold' }}>Total Loan Amount:</label>
             <input
               type="number"
               id="amount"
               name="amount"
               value={formData.amount}
               onChange={handleInputChange}
-              placeholder="Enter loan amount"
               style={styles.input}
               required
             />
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            style={styles.button}
-            onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
-            onMouseOut={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
-          >
-            Submit
-          </button>
+          <button type="submit" style={styles.button}>Calculate & Submit</button>
         </form>
 
-        {/* Display Calculated Monthly Payment */}
-        {calculatedAmount !== null && (
-          <div style={{ marginTop: '24px', fontSize: '1.25rem', fontWeight: 'bold' }}>
-            <p>Remaining Amount after Initial Deposit: {Number(formData.amount) - Number(formData.initialDeposit)}</p>
-            <p>Monthly Payment: {calculatedAmount} PKR</p>
-          </div>
+        {/* Display Temporary Password */}
+        {temporaryPassword && (
+          <p>Your temporary password is: {temporaryPassword}</p>
         )}
       </div>
     </div>
