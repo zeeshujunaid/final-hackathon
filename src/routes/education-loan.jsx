@@ -24,7 +24,6 @@ function EducationLoan() {
     }));
   };
 
-  
   const saveToDatabase = async () => {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
@@ -36,15 +35,26 @@ function EducationLoan() {
       return false;
     }
   
-    // Generate a random 6-digit password
-    const generatedPassword = Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit random number
-    console.log('Generated Password:', generatedPassword); // Log the generated password
-  
     try {
-      // Firebase Authentication: Create user with email and generated password
+      // Get user loan data from local storage
+      const loanData = JSON.parse(localStorage.getItem('userLoanData'));
+  
+      if (!loanData) {
+        Swal.fire({
+          title: 'Error',
+          text: 'Loan data is missing in local storage. Please calculate the loan first.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+        return false;
+      }
+  
+      // Firebase Authentication: Create user with email and a temporary password
       const auth = getAuth();
-      const userCredential = await createUserWithEmailAndPassword(auth, email, generatedPassword.toString()); // Sign up user with email and generated password
-      
+      const temporaryPassword = Math.random().toString(36).slice(-8); // Generates a temporary 8-character password
+      console.log('Temporary Password:', temporaryPassword); // Only for debugging, remove in production
+  
+      const userCredential = await createUserWithEmailAndPassword(auth, email, temporaryPassword); // Sign up user
       const user = userCredential.user;
       console.log('User created:', user);
   
@@ -52,19 +62,19 @@ function EducationLoan() {
       const db = getFirestore();
       const userRef = doc(db, 'users', cnic); // Set the CNIC as the document ID
   
-      // Save user details to Firestore with CNIC as the document ID
+      // Save user details and loan data to Firestore with CNIC as the document ID
       await setDoc(userRef, {
         name,
         email,
         cnic,
         createdAt: new Date(),
-        password: generatedPassword, // Store the generated password (optional)
+        loanDetails: loanData, // Include loan data from local storage
       });
   
       // Success message
       Swal.fire({
         title: 'Data Saved',
-        text: 'Your details have been saved successfully in Firebase, and the user has been created.',
+        text: 'Your details and loan data have been saved successfully in Firebase.',
         icon: 'success',
         confirmButtonText: 'OK',
       });
@@ -91,6 +101,8 @@ function EducationLoan() {
       return false;
     }
   };
+  
+  
   
   const styles = {
     container: {
