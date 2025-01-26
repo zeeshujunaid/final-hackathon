@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoMdContact } from "react-icons/io";
 import { FaHome, FaServicestack, FaHandshake } from "react-icons/fa";
 
 function Navbar() {
+  const navigate = useNavigate(); // Initialize navigate function
+
   const styles = {
     navbar: {
       height: "100px", // Increased height
@@ -41,6 +43,11 @@ function Navbar() {
     },
   };
 
+  // Function to handle the login button click
+  const handleLoginClick = () => {
+    navigate("/login"); // Navigate to the login page
+  };
+
   return (
     <div style={styles.navbar}>
       {/* Desktop Menu */}
@@ -66,7 +73,7 @@ function Navbar() {
 
       {/* Login Button */}
       <div>
-        <button style={styles.loginButton}>Login</button>
+        <button style={styles.loginButton} onClick={handleLoginClick}>Login</button>
       </div>
     </div>
   );

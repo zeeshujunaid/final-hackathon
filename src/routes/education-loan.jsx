@@ -110,7 +110,7 @@ function EducationLoan() {
     container: {
       height: '100vh',
       width: '100vw',
-      backgroundImage: "url('https://www.example.com/your-background.jpg')",
+      backgroundImage: "url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVvRrKrDLvXTDFmPYEcaojO7OyysoikMRWmg&s')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       display: 'flex',
@@ -121,7 +121,7 @@ function EducationLoan() {
       padding: '0 16px',
     },
     formContainer: {
-      backgroundColor: 'red',
+      backgroundColor: 'lightgreen',
       borderRadius: '16px',
       padding: '32px',
       width: '100%',
@@ -259,7 +259,7 @@ function EducationLoan() {
     <div style={styles.container}>
       <div style={styles.formContainer}>
         <h1 style={styles.heading}>Welcome to Education Loan</h1>
-        <h2 style={styles.subHeading}>Please fill all the inputs to approve your loan</h2>
+        <h2 style={styles.subHeading}>Please fill all the details to approve your loan</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           {/* Subcategory Dropdown */}
           <div>
@@ -273,8 +273,8 @@ function EducationLoan() {
               required
             >
               <option value="">Select</option>
-              <option value="Undergraduate">Undergraduate</option>
-              <option value="Postgraduate">Postgraduate</option>
+              <option value="university fee">university fee</option>
+              <option value="child fee">child fee</option>
             </select>
           </div>
           

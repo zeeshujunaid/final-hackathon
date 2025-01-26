@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import Swal from 'sweetalert2'; // Don't forget to import SweetAlert
+import Swal from 'sweetalert2'; // Import SweetAlert
+import { getAuth } from 'firebase/auth'; // Import Auth if needed for user authentication
+import { createUserWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth
+import { getFirestore, collection, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 
 function ShadiLoan() {
   // State for form inputs
@@ -107,7 +110,7 @@ function ShadiLoan() {
       container: {
         height: '100vh',
         width: '100vw',
-        backgroundImage: "url('https://www.example.com/your-background.jpg')",
+        backgroundImage: "url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1LjMk_wUJ_VH8mCGis5q1w3ajw13iGEd9cA&s')",
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         display: 'flex',
@@ -118,7 +121,7 @@ function ShadiLoan() {
         padding: '0 16px',
       },
       formContainer: {
-        backgroundColor: 'red',
+        backgroundColor: 'lightgreen',
         borderRadius: '16px',
         padding: '32px',
         width: '100%',
@@ -255,8 +258,8 @@ function ShadiLoan() {
     return (
       <div style={styles.container}>
         <div style={styles.formContainer}>
-          <h1 style={styles.heading}>Welcome to Education Loan</h1>
-          <h2 style={styles.subHeading}>Please fill all the inputs to approve your loan</h2>
+          <h1 style={styles.heading}>Welcome to shadi Loan</h1>
+          <h2 style={styles.subHeading}>Please fill all the details to approve your loan</h2>
           <form onSubmit={handleSubmit} style={styles.form}>
             {/* Subcategory Dropdown */}
             <div>
@@ -270,8 +273,10 @@ function ShadiLoan() {
                 required
               >
                 <option value="">Select</option>
-                <option value="Undergraduate">Undergraduate</option>
-                <option value="Postgraduate">Postgraduate</option>
+                <option value="valima">valima</option>
+                <option value="furniture">furniture</option>
+                <option value="valima food">valima food</option>
+                <option value="jahez">jahez</option>
               </select>
             </div>
             

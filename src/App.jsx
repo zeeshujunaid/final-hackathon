@@ -1,5 +1,4 @@
 import React from "react";
-import Signup from "./auth/signupForm"
 import Login from "./auth/loginForm";
 import Loading from "./loading";
 import Shadi from "./routes/shadi-loan.jsx";
@@ -16,11 +15,9 @@ export default function App() {
 
 
   const router = createBrowserRouter([
-    { path: "/", element: (<Loading />) },
-    { path: "/Signup", element: (<Signup />) },
     { path: "/Login", element: (<Login />) },
     { path: "/Loading", element: (<Loading />) },
-    { path: "/Index", element: (<Index />) },
+    { path: "/", element: (<Index />) },
     { path: "/Shadi", element: (<Shadi />) },
     { path: "/Buisnees", element: (<Buisnees />) },
     { path: "/Education", element: (<Education />) },

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import Swal from 'sweetalert2'; // Don't forget to import SweetAlert
+import Swal from 'sweetalert2'; // Import SweetAlert
+import { getAuth } from 'firebase/auth'; // Import Auth if needed for user authentication
+import { createUserWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth
+import { getFirestore, collection, setDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 
 function Homeloan(){
  // State for form inputs
@@ -107,7 +110,7 @@ function Homeloan(){
      container: {
        height: '100vh',
        width: '100vw',
-       backgroundImage: "url('https://www.example.com/your-background.jpg')",
+       backgroundImage: "url('https://img.pikbest.com/wp/202405/keychain-in-hand-rendering-of-approved-home-loan_9854073.jpg!w700wp')",
        backgroundSize: 'cover',
        backgroundPosition: 'center',
        display: 'flex',
@@ -118,7 +121,7 @@ function Homeloan(){
        padding: '0 16px',
      },
      formContainer: {
-       backgroundColor: 'red',
+       backgroundColor: 'lightgreen',
        borderRadius: '16px',
        padding: '32px',
        width: '100%',
@@ -255,8 +258,8 @@ function Homeloan(){
    return (
      <div style={styles.container}>
        <div style={styles.formContainer}>
-         <h1 style={styles.heading}>Welcome to Education Loan</h1>
-         <h2 style={styles.subHeading}>Please fill all the inputs to approve your loan</h2>
+         <h1 style={styles.heading}>Welcome to home construction Loan</h1>
+         <h2 style={styles.subHeading}>Please fill all the details to approve your loan</h2>
          <form onSubmit={handleSubmit} style={styles.form}>
            {/* Subcategory Dropdown */}
            <div>
@@ -270,8 +273,9 @@ function Homeloan(){
                required
              >
                <option value="">Select</option>
-               <option value="Undergraduate">Undergraduate</option>
-               <option value="Postgraduate">Postgraduate</option>
+               <option value="structure">structure</option>
+               <option value="finishing">finishing</option>
+               <option value="loan">loan</option>
              </select>
            </div>
            
